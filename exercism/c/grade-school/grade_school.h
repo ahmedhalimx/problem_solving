@@ -8,14 +8,14 @@
 #define MAX_NAME_LENGTH (20)
 #define MAX_STUDENTS (20)
 
-typedef struct {
+typedef struct student_s {
    uint8_t grade;
-   char name[MAX_NAME_LENGTH];
+   char *name;
 } student_t;
 
-typedef struct {
+typedef struct roster_s {
    size_t count;
-   student_t students[MAX_STUDENTS];
+   student_t students;
 } roster_t;
 
 void init_roster(roster_t *roster);

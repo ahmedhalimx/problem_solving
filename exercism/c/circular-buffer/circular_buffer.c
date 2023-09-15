@@ -1,75 +1,91 @@
 #include "circular_buffer.h"
 #include <stdlib.h>
 
-int16_t write(circular_buffer_t *cbuf, buffer_value_t val) {
-    if (cbuf->end == (cbuf->values + (cbuf->length - 1))) {
-        cbuf->end = cbuf->values;
-        if (cbuf->end == NULL) {
-            *(cbuf->end) = val;
-            return (EXIT_SUCCESS);
-        } else {
-            return (EXIT_FAILURE);
-        }
-    }
+int16_t write(circular_buffer_t *cbuf, buffer_value_t bufval) {
+	if (cbuf->size == cbuf->capacity) {
+			errno = ENOBUFS;
+			return (EXIT_FAILURE);
+	}
 
-    if ((cbuf->end + 1) != NULL) {
-        *(cbuf->end) = val;
-        return (EXIT_SUCCESS);
-    } else {
-        return (EXIT_FAILURE);
-    }
+	if (cbuf->size == 0) {
+		*(cbuf->write_ptr) = bufval;
+		++cbuf->size;
+		return (EXIT_SUCCESS);
+	}
+
+	if (cbuf->size != cbuf->capacity) {
+		if (cbuf->write_ptr == &(cbuf->buffer_data[cbuf->capacity - 1])) 
+			cbuf->write_ptr= &(cbuf->buffer_data[0]);
+		else
+			++cbuf->write_ptr;
+	}
+	*(cbuf->write_ptr) = bufval;
+	++cbuf->size;
+	return (EXIT_SUCCESS);
 }
 
-int16_t overwrite(circular_buffer_t *cbuf, buffer_value_t val) {
-    if (cbuf->end == (cbuf->values + (cbuf->length - 1))) {
-        cbuf->end = cbuf->values;
-        *(cbuf->end) = val;
-        return (EXIT_SUCCESS);
-    } else {
-        ++cbuf->end;
-        *(cbuf->end) = val;
-        return (EXIT_SUCCESS);
-    }
-    return (EXIT_FAILURE);
+int16_t overwrite(circular_buffer_t *cbuf, buffer_value_t bufval) {
+	if (cbuf->size != cbuf->capacity) {
+		return (write(cbuf, bufval));
+	}
+
+	if (cbuf->write_ptr == &(cbuf->buffer_data[cbuf->capacity - 1])) {
+		if (cbuf->read_ptr == &(cbuf->buffer_data[0]))
+			++cbuf->read_ptr;
+
+		cbuf->write_ptr = &(cbuf->buffer_data[0]);
+		*(cbuf->write_ptr) = bufval;
+	} else {
+		if ((cbuf->write_ptr + 1) == cbuf->read_ptr) {
+			if (cbuf->read_ptr == &(cbuf->buffer_data[cbuf->capacity - 1]))
+				cbuf->read_ptr = &(cbuf->buffer_data[0]);
+			else
+				++cbuf->read_ptr;
+		}
+
+		++cbuf->write_ptr;
+		*(cbuf->write_ptr) = bufval;
+	}
+	return (EXIT_SUCCESS);
 }
 
-int16_t read(circular_buffer_t *cbuf, buffer_value_t *val) {
-    if (cbuf->start == (cbuf->values + (cbuf->length - 1))
-            && cbuf->start != cbuf->end) {
-        cbuf->start = cbuf->values;
-        *val = *cbuf->start;
-        return (EXIT_SUCCESS);
-    }
+int16_t read(circular_buffer_t *cbuf, buffer_value_t *read_val) {
+	if (cbuf->size == 0 || !cbuf) {
+		errno = ENODATA;
+		return (EXIT_FAILURE);
+	}
 
-    if (cbuf->start != cbuf->end) {
-        ++cbuf->start;
-        *val = *cbuf->start;
-        return (EXIT_SUCCESS);
-    }
-    return (EXIT_FAILURE);
+	*(read_val) = *(cbuf->read_ptr);
+	--cbuf->size;
+
+	if (cbuf->read_ptr != cbuf->write_ptr) {
+		if (cbuf->read_ptr == &(cbuf->buffer_data[cbuf->capacity - 1])) 
+			cbuf->read_ptr = &(cbuf->buffer_data[0]);
+		else
+			++cbuf->read_ptr;
+	}
+	return (EXIT_SUCCESS);
+}
+
+void clear_buffer(circular_buffer_t *cbuf) {
+	if (cbuf->buffer_data)
+		free(cbuf->buffer_data);
+
+	cbuf->read_ptr = cbuf->write_ptr = &(cbuf->buffer_data[0]);
+	cbuf->size = 0;
 }
 
 void delete_buffer(circular_buffer_t *cbuf) {
-    int i;
-
-    for (i = cbuf->length - 1; i >= 0; --i){
-        free(cbuf->values + i);
-    }
-    cbuf->values = cbuf->start = cbuf->end = NULL;
+	if (cbuf)
+		free(cbuf);
 }
 
-//void write_values_to_buffer(values_length, values, false, buffer);
-
-void write_values_to_buffer(size_t length, buffer_value_t values[], 
-        bool overwrite, circular_buffer_t cbuf) {
-
-}
-
-void read_values_from_buffer(size_t length, buffer_value_t values[],
-        circular_buffer_t cbuf) {
-
-}
-
-circular_buffer_t new_circular_buffer(size_t capacity) {
-
+circular_buffer_t* new_circular_buffer(uint16_t capacity) {
+	circular_buffer_t *cbuf = malloc(sizeof(circular_buffer_t));
+	cbuf->buffer_data = malloc(sizeof(buffer_value_t) * capacity);
+	cbuf->write_ptr = cbuf->read_ptr = &(cbuf->buffer_data[0]);
+	cbuf->capacity = capacity;
+	cbuf->isEmpty = true;
+	cbuf->size = 0;
+	return (cbuf);
 }

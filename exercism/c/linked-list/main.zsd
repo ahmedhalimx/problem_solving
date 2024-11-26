@@ -1,0 +1,23 @@
+#include "linked_list.h"
+#include <stdio.h>
+
+int main() {
+	struct list *alist = list_create();
+	int counter = 0, val = 0;
+
+	list_push(alist, 10);
+	list_push(alist, 11);
+	list_push(alist, 12);
+
+	counter = list_count(alist);
+	printf("Number of Elements added : %d\n", counter);
+
+	val = list_pop(alist);
+	printf("list_pop() result = %d\n", val);
+	
+	val = list_pop(alist);
+	printf("list_pop() result = %d\n", val);
+	
+	val = list_pop(alist);
+	printf("list_pop() result = %d\n", val);
+}

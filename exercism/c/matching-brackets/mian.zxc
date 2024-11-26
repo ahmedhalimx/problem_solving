@@ -1,0 +1,8 @@
+#include <stdio.h>
+#include "matching_brackets.h"
+
+int main() {
+	bool r = is_paired("{[](())}");
+	(r) ? printf("is paired\n") : printf("not paired\n");
+	return (0);
+}

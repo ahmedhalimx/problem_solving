@@ -1,27 +1,38 @@
 #include "armstrong_numbers.h"
 
-int getNumberOfDigits(int number) {
-    int nm_of_digits = 0;
+/**
+ * number_of_digits - computes number of digits in
+ * 										a given number
+ *
+ * @number: an integer
+ *
+ * return: Always (digits)
+ */
 
-    while (number != 0) {
-        number /= 10;
-        ++nm_of_digits;
-    }
-    return (nm_of_digits);
+int number_of_digits(int number) {
+    int digits = 0;
+
+		for (int i = number; i != 0; i /= 10) ++digits;
+    return (digits);
 }
 
+
+/**
+ * is_armstrong_number - checks if a given number is
+ * 											an armstrongnumber
+ *
+ * @candidate: integer to be checked
+ *
+ * return: if the candidate is an armstrong number (true),
+ * 				otherwise (false)
+ */
+
 bool is_armstrong_number(int candidate) {
-    int sum = 0;
-    int nm_of_digits = getNumberOfDigits(candidate);
+    int num_digits = number_of_digits(candidate), sum = 0;
 
     for (int i = candidate; i != 0; i /= 10) {
         int digit = i % 10;
-        int n = 1;
-
-        for (int j = 0; j < nm_of_digits; j++) {
-            n *= digit;
-        }
-        sum += n;
+        sum += pow(digit, num_digits);
     }
     return (sum == candidate);
 }

@@ -1,0 +1,35 @@
+#include "list_ops.h"
+#include <stdio.h>
+
+static const int MAX_STRING_LEN = 100;
+static list_t *list = NULL;
+static list_t *list2 = NULL;
+static list_t *actual = NULL;
+static char *error_message = NULL;
+
+static char *print_elements(size_t length, list_element_t list_elements[])
+{
+   char *array = malloc(MAX_STRING_LEN * sizeof(char));
+   char *ptr = array;
+   for (size_t i = 0; i < length; i++) {
+      int printed = snprintf(ptr, MAX_STRING_LEN - (ptr - array), " %d ",
+                             (list_elements[i]));
+      ptr += printed;
+      if (ptr - array > MAX_STRING_LEN) {
+         break;
+      }
+   }
+   return array;
+}
+
+int main() {
+   list = new_list(2, (list_element_t[]){ 1, 2 });
+   list2 = new_list(4, (list_element_t[]){ 2, 3, 4, 5 });
+   size_t expected_length = 6;
+   list_element_t expected_elements[] = { 1, 2, 2, 3, 4, 5 };
+
+   actual = append_list(list, list2);
+
+	 printf("%s\n", print_elements(actual->length, actual->elements));
+	 printf("%s\n", print_elements(expected_length, expected_elements));
+}

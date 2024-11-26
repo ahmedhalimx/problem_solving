@@ -1,0 +1,26 @@
+#include "pascals_triangle.h"
+#include <stdio.h>
+
+	/*a
+	for (size_t i = 0; i < rows; ++i) {
+		printf("ROW [%lu]:", i);
+		for (size_t j = 0; j < rows; ++j) {
+			printf(" (%lu.%lu)[%u] ", i, j, triangle[i][j]);
+		}
+		printf("\n");
+	}
+	*/
+
+
+int main() {
+	size_t rows = 2;
+	uint8_t **tri = create_triangle(rows);
+
+	for (size_t i = 0; i < rows; ++i) {
+		for (size_t j = 0; j < rows; ++j) {
+			printf("%u ", tri[i][j]);
+		}
+		printf("\n");
+	}
+	return (0);
+}

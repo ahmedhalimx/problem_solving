@@ -1,0 +1,21 @@
+#include "allergies.h"
+
+inline bool is_allergic_to(allergen_t allergen, int score) {
+	return (((1 << allergen) & score) > 0);
+}
+
+allergen_list_t get_allergens(int score) {
+	allergen_list_t my_allergens = { .count = 0, .allergens = {false} };
+
+	for (allergen_t allergey = ALLERGEN_EGGS; allergey <= ALLERGEN_CATS; ++allergey) {
+		if (!is_allergic_to(allergey, score)) {
+			my_allergens.allergens[allergey] = false;
+			continue;
+		}
+
+		my_allergens.allergens[allergey] = true;
+		++my_allergens.count;
+	}
+	return (my_allergens);
+}
+

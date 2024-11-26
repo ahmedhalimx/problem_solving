@@ -53,7 +53,6 @@ export function canSpy(knightIsAwake, archerIsAwake, prisonerIsAwake) {
  */
 export function canSignalPrisoner(archerIsAwake, prisonerIsAwake) {
 	return (!archerIsAwake && prisonerIsAwake);
-
 }
 
 /**

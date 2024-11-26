@@ -1,0 +1,10 @@
+#include "clock.h"
+#include <stdio.h>
+
+int main(void) {
+	clock_t clock = clock_create(10, 00);
+	printf("%s\n", clock.text);
+	
+	clock = clock_add(clock, 3);
+	printf("%s\n", clock.text);
+}

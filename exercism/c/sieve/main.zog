@@ -1,0 +1,19 @@
+#include "sieve.h"
+#include <stdio.h>
+
+#define RESULT_ARRAY_LEN (1000)
+static uint32_t result_array[RESULT_ARRAY_LEN];
+
+int main() {
+   const uint32_t limit = 13;
+   const uint32_t expected_prime_array[] = { 2, 3, 5, 7, 11, 13 };
+   const uint32_t expected_prime_count = 4;
+
+   const uint32_t result_prime_count = sieve(limit, result_array, 4);
+
+	 for (size_t i = 0; i < result_prime_count; ++i) {
+		 printf("%u\n", result_array[i]);
+	 }
+
+	 printf("aahsiuhdaodo : %u", result_prime_count);
+}

@@ -1,0 +1,13 @@
+#include <stdio.h>
+#include <string.h>
+
+int main() {
+	char number[] = "11";
+	size_t power = strlen(number) - 1;
+	size_t binary = 0;
+
+	for (int i = 0; number[i] != '\0'; ++i, --power)
+		binary += ((size_t)number[i] - 48) * (1 << power);
+
+	printf("%lu", binary);
+}

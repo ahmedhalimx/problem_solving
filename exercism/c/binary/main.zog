@@ -1,0 +1,7 @@
+#include "binary.h"
+#include <stdio.h>
+
+int main() {
+   int num = convert("1001");
+	 printf("Expected : %d, Actual : %d", 9, num);
+}

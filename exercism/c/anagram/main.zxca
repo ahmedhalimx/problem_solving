@@ -1,0 +1,34 @@
+#include <stdio.h> 
+#include <stdlib.h>
+#include "anagram.h"
+
+struct candidates candidates;
+
+static struct candidates build_candidates(char *inputs, size_t count)
+{
+   struct candidates result;
+   result.count = count;
+   result.candidate = malloc(sizeof(struct candidate) * count);
+   for (int i = 0; i < (int)count; i++) {
+      result.candidate[i].word = &inputs[i * MAX_STR_LEN];
+      result.candidate[i].is_anagram = UNCHECKED;
+   }
+
+   return result;
+}
+
+int main() {
+   char inputs[][MAX_STR_LEN] = { "enlists", "google", "inlets", "banana" };
+
+   char subject[] = { "listen" };
+
+   candidates = build_candidates(*inputs, sizeof(inputs) / MAX_STR_LEN);
+   enum anagram_status expected[] = { NOT_ANAGRAM, NOT_ANAGRAM, IS_ANAGRAM,
+                                      NOT_ANAGRAM };
+   find_anagrams(subject, &candidates);
+
+	 for (int i = 0; i < candidates.count; ++i) {
+		 printf("Word: %s, is_anagram: %d\n", candidates.candidate[i].word, candidates.candidate[i].is_anagram);
+	 }
+	 return (EXIT_SUCCESS);
+}

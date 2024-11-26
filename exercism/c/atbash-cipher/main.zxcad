@@ -1,0 +1,57 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
+#define ATBASH_LAST_INDEX 219
+#define WHITE_SPACE ' '
+
+char *atbash_encode(const char *input) {
+	if (!input) return (NULL);
+	size_t counter = 0, idx = 0;
+	char *encoded = calloc(100, sizeof(char));
+	char char_encoded = '\0';
+
+	for (size_t i = 0; input[i] != '\0'; ++i) {
+		if (ispunct(input[i]) || isspace(input[i])) continue;
+		if (counter == 5) {
+			encoded[idx] = WHITE_SPACE;
+			counter = 0;
+			++idx;
+		}
+		char_encoded = ATBASH_LAST_INDEX - tolower(input[i]);
+		encoded[idx] = char_encoded;
+		++counter, ++idx;
+	}
+	encoded = realloc(encoded, (idx + 1) * sizeof(char));
+	encoded[idx] = '\0';
+	return (encoded);
+}
+
+char *atbash_decode(const char *input) {
+	if (!input) return (NULL);
+	char *decoded = calloc(100, sizeof(char));
+	char char_decoded = '\0';
+	size_t idx = 0;
+
+	for (size_t i = 0; input[i] != '\0'; ++i) {
+		if (isspace(input[i])) continue;
+		char_decoded = ATBASH_LAST_INDEX - tolower(input[i]);
+		decoded[idx] = char_decoded;
+		++idx;
+	}
+	decoded = realloc(decoded, (idx + 1) * sizeof(char));
+	decoded[idx] = '\0';
+	return (decoded);
+}
+
+int main() {
+	char *encode = atbash_encode("AHmed Moh AmeD Hal im..");
+	printf("encode: %s\n", encode);
+
+	char *decode = atbash_decode(encode);
+	printf("decode: %s\n", decode);
+
+	free(encode);
+	free(decode);
+}
